@@ -6,22 +6,32 @@ const {
   add,
   change,
   remove,
+  changeFav,
 } = require("../../controlers/contacts");
 
-const validateData = require("../../validators/validateData");
+const { validateData, validateFav } = require("../../validators/validateData");
 
-const schema = require("../../schemas/schema");
+const isValidId = require("../../validators/isValidId");
+
+const { schemas } = require("../../models/contact");
 
 const router = express.Router();
 
 router.get("/", list);
 
-router.get("/:id", contact);
+router.get("/:id", isValidId, contact);
 
-router.post("/", validateData(schema), add);
+router.post("/", validateData(schemas.addSchema), add);
 
-router.delete("/:id", remove);
+router.delete("/:id", isValidId, remove);
 
-router.put("/:id", validateData(schema), change);
+router.put("/:id", validateData(schemas.addSchema), change);
+
+router.patch(
+  "/:id/favorite",
+  isValidId,
+  validateFav(schemas.updateFavSchema),
+  changeFav
+);
 
 module.exports = router;
