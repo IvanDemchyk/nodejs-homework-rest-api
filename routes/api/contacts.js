@@ -9,23 +9,25 @@ const {
   changeFav,
 } = require("../../controlers/contacts");
 
-const { validateData, validateFav } = require("../../validators/validateData");
+const { validateData, validateFav } = require("../../middlewares/validateData");
 
-const isValidId = require("../../validators/isValidId");
+const isValidId = require("../../middlewares/isValidId");
+
+const authenticate = require("../../middlewares/authenticate");
 
 const { schemas } = require("../../models/contact");
 
 const router = express.Router();
 
-router.get("/", list);
+router.get("/", authenticate, list);
 
-router.get("/:id", isValidId, contact);
+router.get("/:id", authenticate, isValidId, contact);
 
-router.post("/", validateData(schemas.addSchema), add);
+router.post("/", authenticate, validateData(schemas.addSchema), add);
 
-router.delete("/:id", isValidId, remove);
+router.delete("/:id", authenticate, isValidId, remove);
 
-router.put("/:id", validateData(schemas.addSchema), change);
+router.put("/:id", authenticate, validateData(schemas.addSchema), change);
 
 router.patch(
   "/:id/favorite",
